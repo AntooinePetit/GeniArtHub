@@ -278,3 +278,7 @@ article > div > div.price > p {
     font-weight: 400;
     line-height: normal;
 }
+
+.error{
+    text-align: center;
+}
