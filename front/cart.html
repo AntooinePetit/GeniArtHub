@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Panier - GeniArtHub</title>
+   <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="page">
+   <header>
+      <div>
+         <a href="index.html">
+            <img src="img/logo-black.png" alt="Logo GeniArtHub version sombre">
+         </a>
+         <a href="cart.html"><img src="img/cart.svg" alt="Aller au panier"></a>
+      </div>
+   </header>
+   <main id="cart">
+      <section id="panier">
+         <h1>Votre panier</h1>
+         <div id="articles">
+            <article>
+               <img src="img/01.png" alt="">
+               <h2>Eclat Ethéré : Bird</h2>
+               <p>Format 40 x 30</p>
+               <p>35,25€</p>
+               <div class="input-container">
+                  <label for="quantity">Quantité : </label>
+                  <input type="number" name="quantity" id="quantity"  placeholder="2" value="2" minlength="1">
+               </div>
+               <button>Supprimer</button>
+            </article>
+            <h3>Total de la commande</h3>
+            <p id="total-article">X articles pour un montant de X €</p>
+         </div>
+      </section>
+      <section id="order">
+         <h2>Formulaire de commande</h2>
+         <form action="#">
+            <input type="text" name="first-name" id="first-name">
+            <input type="text" name="last-name" id="last-name">
+            <input type="text" name="adress" id="adress">
+            <input type="text" name="city" id="city">
+            <input type="email" name="mail" id="mail">
+            <input type="submit" value="Passer commande">
+         </form>
+      </section>
+
+   </main>
+   <footer>
+      <p><a href="https://www.errantecreation.com/">Errante Creation</a> © 2023 - GeniArtHub</p>
+   </footer>
+   <script src="js/cart.js"></script>
+</body>
+</html>

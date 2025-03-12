@@ -280,5 +280,132 @@ article > div > div.price > p {
 }
 
 .error{
+    display: block !important;
+}
+
+dialog {
+    background-color: #EE7F43;
+    padding: 40px;
+    border-radius: 10px;
+    max-width: 690px;
+    align-self: center;
+    justify-self: center;
+}
+
+dialog i{
+    color:#fff;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+}
+
+dialog i:hover{
+    cursor: pointer;
+}
+
+dialog p{
+    font-family: 'Source Sans 3', sans-serif;
+    margin-top: 30px;
+    color:#fff;
+    font-size: 25px;
     text-align: center;
 }
+
+#cart{
+    max-width: 1440px;
+    margin: auto;
+}
+
+#cart h1,
+#cart h2{
+    color: #000;
+    text-align: center;
+    font-family: 'Rum Raisin', sans-serif;
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+#cart h3{
+    color: #000;
+    text-align: end;
+    font-family: 'Rum Raisin', sans-serif;
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin: 0;
+}
+
+#total-article{
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    text-align: end;
+    margin: 0;
+}
+
+#panier{
+    margin-bottom: 150px;
+}
+
+#panier article{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#panier article img{
+    max-width: 180px;
+    height: 180px;
+    object-fit: cover;
+}
+
+#panier article p,
+#panier article button,
+#panier article label,
+#panier article input,
+#panier article button{
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 25px;
+}
+
+.input-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#panier input[type="number"] {
+    height:50px;
+    width:70px;
+    background-color: transparent;
+    text-align: center;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    padding: 0;
+    padding-left: 7px;
+}
+
+#panier article button{
+    background: none;
+    border: none;
+    text-decoration: underline;
+}
+
+#panier article button:hover{
+    cursor: pointer;
+}
+
+#articles{
+    padding-top: 30px;
+    border-top: 1px solid #EE7F43;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #EE7F43;
+}
+

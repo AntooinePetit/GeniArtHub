@@ -63,7 +63,7 @@ function getWork(work) {
                <select name="format" id="format">
                </select>
             </div>
-            <a class="button-buy" href="#">Buy ${work.shorttitle}</a>
+            <a class="button-buy" href="#" data-work-id="${work._id}">Buy ${work.shorttitle}</a>
       </div>
    </article>
 
@@ -90,6 +90,16 @@ function getWork(work) {
       const format = formats.find(el => String(el.taille) === String(choice))
       showPrice.innerText = format.prix
    })
+
+   // Verifying if user tries to buy the correct quantity
+   const buttonBuy = document.querySelector('.button-buy')
+   buttonBuy.addEventListener('click', e => {
+      const quantity = document.querySelector('#quantity')
+      if(quantity.value > 100 || quantity.value < 1){
+         e.preventDefault()
+         modaleErrorShow(quantity.value)
+      }
+   })
 }
 
 // Function to format the long description
@@ -113,6 +123,21 @@ function shortDescription(text){
    // Extract the first 2 sentences
    const sentences = text.match(/[^.!?]+[.!?]/g) || [];  
    return sentences.slice(0, 2).join(' ').trim(); 
+}
+
+function modaleErrorShow(value){
+   const article = document.querySelector('article')
+   const modale = document.createElement('dialog')
+   article.after(modale)
+   modale.innerHTML = `
+   <i class="fa-solid fa-xmark"></i>
+   <p>Vous ne pouvez pas commander ${value} unité(s), veuillez sélectionner entre 1 et 100 unités</p>
+   `
+   modale.showModal()
+   const cross = document.querySelector('.fa-xmark')
+   cross.addEventListener('click', e => {
+      modale.remove()
+   })
 }
 
 
