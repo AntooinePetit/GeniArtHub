@@ -279,36 +279,12 @@ article > div > div.price > p {
     line-height: normal;
 }
 
+.detailoeuvre dialog{
+    text-align: center;
+}
+
 .error{
     display: block !important;
-}
-
-dialog {
-    background-color: #EE7F43;
-    padding: 40px;
-    border-radius: 10px;
-    max-width: 690px;
-    align-self: center;
-    justify-self: center;
-}
-
-dialog i{
-    color:#fff;
-    position: absolute;
-    right: 15px;
-    top: 15px;
-}
-
-dialog i:hover{
-    cursor: pointer;
-}
-
-dialog p{
-    font-family: 'Source Sans 3', sans-serif;
-    margin-top: 30px;
-    color:#fff;
-    font-size: 25px;
-    text-align: center;
 }
 
 #cart{
@@ -356,6 +332,7 @@ dialog p{
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 15px 0;
 }
 
 #panier article img{
@@ -370,7 +347,8 @@ dialog p{
 #panier article input,
 #panier article button{
     font-family: "Source Sans Pro", sans-serif;
-    font-size: 25px;
+    font-weight: 400;
+    font-size: 32px;
 }
 
 .input-container {
@@ -403,7 +381,7 @@ dialog p{
 }
 
 #articles{
-    padding-top: 30px;
+    padding-top: 15px;
     border-top: 1px solid #EE7F43;
     padding-bottom: 15px;
     border-bottom: 1px solid #EE7F43;
@@ -449,5 +427,42 @@ dialog p{
 }
 
 #order input[type=submit]:hover{
+    cursor: pointer;
+}
+
+dialog{
+    width: 1350px;
+    height: 483px;
+
+}
+
+dialog i{
+    color:black;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 25px;
+}
+
+dialog p{
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: 400;
+    font-size: 32px;
+    margin: 0;
+    align-self: center;
+}
+
+#title-modale{
+    font-weight: 700 !important;
+    font-size: 40px !important;
+    text-align: center;
+    padding-bottom: 160px;
+}
+
+dialog::backdrop{
+    background: #000000B0;
+}
+
+dialog i:hover{
     cursor: pointer;
 }

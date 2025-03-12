@@ -63,7 +63,7 @@ function getWork(work) {
                <select name="format" id="format">
                </select>
             </div>
-            <a class="button-buy" href="#" data-work-id="${work._id}">Buy ${work.shorttitle}</a>
+            <a class="button-buy" href="#">Buy ${work.shorttitle}</a>
       </div>
    </article>
 
@@ -94,10 +94,12 @@ function getWork(work) {
    // Verifying if user tries to buy the correct quantity
    const buttonBuy = document.querySelector('.button-buy')
    buttonBuy.addEventListener('click', e => {
+      e.preventDefault()
       const quantity = document.querySelector('#quantity')
       if(quantity.value > 100 || quantity.value < 1){
-         e.preventDefault()
          modaleErrorShow(quantity.value)
+      } else {
+         saveData(work._id, quantity.value, selectFormat.value)
       }
    })
 }
@@ -131,7 +133,8 @@ function modaleErrorShow(value){
    article.after(modale)
    modale.innerHTML = `
    <i class="fa-solid fa-xmark"></i>
-   <p>Vous ne pouvez pas commander ${value} unité(s), veuillez sélectionner entre 1 et 100 unités</p>
+   <p id="title-modale">Erreur</p>
+   <p>Vous ne pouvez pas avoir ${value} unité(s) dans votre panier, veuillez sélectionner entre 1 et 100 unités</p>
    `
    modale.showModal()
    const cross = document.querySelector('.fa-xmark')
@@ -140,6 +143,41 @@ function modaleErrorShow(value){
    })
 }
 
+function modaleValidateShow(){
+   const article = document.querySelector('article')
+   const modale = document.createElement('dialog')
+   article.after(modale)
+   modale.innerHTML = `
+   <i class="fa-solid fa-xmark"></i>
+   <p id="title-modale">Ajouté au panie</p>
+   <p>Votre produit a bien été ajouté au panier</p>
+   `
+   modale.showModal()
+   const cross = document.querySelector('.fa-xmark')
+   cross.addEventListener('click', e => {
+      modale.remove()
+   })
+}
 
+function saveData(id, value, format){
+   const safeFormat = format.replace(/\s+/g, '-');
+   const key = `article-${id}-${safeFormat}`
+   const existingProduct = localStorage.getItem(key)
+
+   if(existingProduct){
+      const productData = JSON.parse(existingProduct)
+      productData.quantity += Number(value);
+      if(productData.quantity > 100){
+         modaleErrorShow(productData.quantity)
+      } else {
+         localStorage.setItem(key, JSON.stringify(productData))
+         modaleValidateShow()
+      }
+      return;
+   }
+   const product = {id : String(id), quantity : Number(value), format:String(format)}
+   localStorage.setItem(key, JSON.stringify(product))
+   modaleValidateShow()
+}
 
 getData()
