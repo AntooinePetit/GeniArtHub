@@ -45,14 +45,58 @@ function modaleErrorShow(value){
    const article = document.querySelector('article')
    const modale = document.createElement('dialog')
    article.after(modale)
-   modale.innerHTML = `
-   <i class="fa-solid fa-xmark"></i>
-   <p id="title-modale">Erreur</p>
-   <p>Vous ne pouvez pas avoir ${value} unité(s) dans votre panier, veuillez sélectionner entre 1 et 100 unités</p>
-   `
+   modale.innerHTML = value > 0 ? `
+      <i class="fa-solid fa-xmark"></i>
+      <p id="title-modale">Erreur</p>
+      <p>Vous ne pouvez pas avoir ${value} unité(s) dans votre panier, veuillez sélectionner entre 1 et 100 unités</p>
+      ` : `
+      <i class="fa-solid fa-xmark"></i>
+      <p id="title-modale">Erreur</p>
+      <p>Vous ne pouvez pas avoir ${value} unité(s) dans votre panier, veuillez sélectionner entre 1 et 100 unités. Pour supprimer un produit du panier, cliquez sur le bouton "Supprimer"</p>
+      `;
    modale.showModal()
    const cross = document.querySelector('.fa-xmark')
    cross.addEventListener('click', e => {
+      modale.remove()
+   })
+}
+
+// Function to confirm the deletion of an article
+function modaleDelete(key, article, quantity, price){
+   const modale = document.createElement('dialog')
+   modale.id = "delete"
+   article.after(modale)
+   modale.innerHTML = `
+      <i class="fa-solid fa-xmark"></i>
+      <p id="title-modale">Supprimer un article</p>
+      <p>Êtes-vous sûr de vouloir supprimer cet article ?</p>
+      <div>
+         <button id="yes">Oui</button>
+         <button id="no">Non</button>
+      </div>
+      `;
+   modale.showModal()
+   // Listening to the cross to remove the modal
+   const cross = document.querySelector('.fa-xmark')
+   cross.addEventListener('click', e => {
+      modale.remove()
+   })
+   // Closing the modal if user refuses to delete the article
+   const noButton = document.querySelector('#no')
+   noButton.addEventListener('click', e => {
+      modale.remove()
+   })
+   // Deleting the article if user confirms the deletion
+   const yesButton = document.querySelector('#yes')
+   yesButton.addEventListener('click', e => {
+      totalArticle -= quantity
+      totalPrice -= (price * quantity)
+      totalPrice = Number(totalPrice.toFixed(2))
+      // Updating visually total articles and price
+      const showTotal = document.querySelector('#total-article')
+      showTotal.innerText = `${totalArticle} articles pour un montant de ${totalPrice} €`
+      localStorage.removeItem(key)
+      article.remove()
       modale.remove()
    })
 }
@@ -77,8 +121,8 @@ if (localStorage.length === 0) {
       console.log(price)
       console.log(dataComplete)
       // Addind visually the article to cart
-      divArticles.insertAdjacentHTML('afterbegin', `
-         <article>
+      const newArticle = document.createElement('article')
+      newArticle.innerHTML = `
             <img src="${dataComplete.image}" alt="${dataComplete.titre}">
             <h2>${dataComplete.titre}</h2>
             <p>${data.format}</p>
@@ -87,9 +131,9 @@ if (localStorage.length === 0) {
                <label for="quantity-${key}">Quantité : </label>
                <input type="number" name="quantity-${key}" id="quantity-${key}"  placeholder="${data.quantity}" value="${data.quantity}" minlength="1">
             </div>
-            <button>Supprimer</button>
-         </article>
-         `)
+            <button id="delete-${key}">Supprimer</button>
+         `
+      divArticles.prepend(newArticle)
       console.log(`Clé : ${key}`, data);
       // Counting total articles and price
       totalArticle += data.quantity
@@ -107,7 +151,12 @@ if (localStorage.length === 0) {
          if(newValue > 100){
             modaleErrorShow(newValue)
             quantityInput.value = 100
-          return;
+            return;
+         }
+         if(newValue < 1){
+            modaleErrorShow(newValue)
+            quantityInput.value = 1
+            return;
          }
          data.quantity = Number(newValue)
          localStorage.setItem(key, JSON.stringify(data))
@@ -117,5 +166,13 @@ if (localStorage.length === 0) {
          const showTotal = document.querySelector('#total-article')
          showTotal.innerText = `${totalArticle} articles pour un montant de ${totalPrice} €`
       })
+
+      // Deleting an article from the cart
+      const deleteButton = document.querySelector(`#delete-${key}`)
+      deleteButton.addEventListener('click', e => {
+         modaleDelete(key, newArticle, data.quantity, price)
+      })
    });
 }
+
+// Verifying the datas in the form
