@@ -56,7 +56,7 @@ function getWork(work) {
             <p>${short}</p>
             <div class="price">
                <p>Acheter pour</p>
-               <span class="showprice">${work.declinaisons[0].prix}</span>
+               <span class="showprice">${work.declinaisons[0].prix} €</span>
             </div>
             <div class="declinaison">
                <input type="number" name="quantity" id="quantity" placeholder="1" value="1" minlength="1">
@@ -88,7 +88,7 @@ function getWork(work) {
       const formats = work.declinaisons
       const choice = selectFormat.value.slice(7)
       const format = formats.find(el => String(el.taille) === String(choice))
-      showPrice.innerText = format.prix
+      showPrice.innerText = `${format.prix} €`
    })
 
    // Verifying if user tries to buy the correct quantity
@@ -149,7 +149,7 @@ function modaleValidateShow(){
    article.after(modale)
    modale.innerHTML = `
    <i class="fa-solid fa-xmark"></i>
-   <p id="title-modale">Ajouté au panie</p>
+   <p id="title-modale">Ajouté au panier</p>
    <p>Votre produit a bien été ajouté au panier</p>
    `
    modale.showModal()
