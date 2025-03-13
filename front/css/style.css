@@ -444,7 +444,8 @@ dialog i{
     font-size: 25px;
 }
 
-dialog p{
+dialog p,
+dialog li{
     font-family: "Source Sans Pro", sans-serif;
     font-weight: 400;
     font-size: 32px;
