@@ -128,9 +128,28 @@ function modaleConfirmOrder(commandNumber){
    })
 }
 
+// Function to show a modal if user tries to send an empty order
+function modaleEmptyCart(){
+   const modale = document.createElement('dialog')
+   modale.innerHTML = `
+   <i class="fa-solid fa-xmark"></i>
+   <p id="title-modale">Erreur</p>
+   <p>Votre panier est vide, impossible de passer une commande sans article</p>
+   `
+   form.after(modale)
+   modale.showModal()
+   const cross = document.querySelector('.fa-xmark')
+   cross.addEventListener('click', e => {
+      modale.remove()
+   })
+   setTimeout(() => {
+      modale.remove()
+   }, 3000);
+}
+
 // Function to clear all after order
-function clearPage(){
-   Object.keys(localStorage).forEach(() => {
+function clearPage(articles){
+   articles.forEach(() => {
    
       // Updating visually total articles and price
       const article = document.querySelector('article')
@@ -150,6 +169,11 @@ function clearPage(){
    // Display change
    const showTotal = document.querySelector('#total-article')
    showTotal.innerText = `${totalArticle} articles pour un montant de ${totalPrice} €`
+   divArticles.insertAdjacentHTML('afterbegin', `
+      <article>
+         <p>Votre panier est vide. Veuillez ajouter au moins un article à votre panier</p>
+      </article>`)
+   form.reset()
 }
 
 // Function to send the order's datas
@@ -196,40 +220,40 @@ if (localStorage.length === 0) {
          <p>Votre panier est vide. Veuillez ajouter au moins un article à votre panier</p>
       </article>`)
 } else {
-   Object.keys(localStorage).forEach(async key => {
-
-      // Load the articles in the cart
-      const data = JSON.parse(localStorage.getItem(key));
+   const completeCart = JSON.parse(localStorage.getItem('cart'))
+   completeCart.forEach(async article => {
 
       // Load the full article's information for price and image
-      const dataComplete = await getData(data.id)
+      const dataComplete = await getData(article.id)
 
       // Save the id in the cart
       cart.push(String(dataComplete._id))
 
       // Getting the correct price for the article and format
       const formats = dataComplete.declinaisons
-      const choice = data.format.slice(7)
+      const choice = article.taille.slice(7)
       const price = formats.find(el => String(el.taille) === String(choice)).prix
 
       // Addind visually the article to cart
+      const safeFormat = choice.replace(/\s+/g, '-');
+      const key = `article-${article.id}-${safeFormat}`
       const newArticle = document.createElement('article')
       newArticle.innerHTML = `
             <img src="${dataComplete.image}" alt="${dataComplete.titre}">
             <h2>${dataComplete.titre}</h2>
-            <p>${data.format}</p>
+            <p>${article.taille}</p>
             <p>${price} €</p>
             <div class="input-container">
                <label for="quantity-${key}">Quantité : </label>
-               <input type="number" name="quantity-${key}" id="quantity-${key}"  placeholder="${data.quantity}" value="${data.quantity}" minlength="1">
+               <input type="number" name="quantity-${key}" id="quantity-${key}"  placeholder="${article.quantity}" value="${article.quantity}" minlength="1">
             </div>
             <button id="delete-${key}">Supprimer</button>
          `
       divArticles.prepend(newArticle)
 
       // Counting total articles and price
-      totalArticle += data.quantity
-      totalPrice += (price * data.quantity)
+      totalArticle += article.quantity
+      totalPrice += (price * article.quantity)
       totalPrice = Number(totalPrice.toFixed(2))
 
       // Updating visually total articles and price
@@ -240,7 +264,7 @@ if (localStorage.length === 0) {
       const quantityInput = document.querySelector(`#quantity-${key}`)
       quantityInput.addEventListener('input', e => {
          const newValue = quantityInput.value
-         const oldValue = data.quantity
+         const oldValue = article.quantity
          if(newValue > 100){
             modaleErrorShow(newValue)
             quantityInput.value = 100
@@ -251,8 +275,8 @@ if (localStorage.length === 0) {
             quantityInput.value = 1
             return;
          }
-         data.quantity = Number(newValue)
-         localStorage.setItem(key, JSON.stringify(data))
+         article.quantity = Number(newValue)
+         localStorage.setItem(key, JSON.stringify(article))
          totalArticle += (newValue - oldValue)
          totalPrice += (newValue - oldValue) * price
          totalPrice = Number(totalPrice.toFixed(2))
@@ -263,22 +287,28 @@ if (localStorage.length === 0) {
       // Deleting an article from the cart
       const deleteButton = document.querySelector(`#delete-${key}`)
       deleteButton.addEventListener('click', e => {
-         modaleDelete(key, newArticle, data.quantity, price, dataComplete._id)
+         modaleDelete(key, newArticle, article.quantity, price, dataComplete._id)
       })
 
    });
 }
 
-// Verifying the datas in the form
+// Verifying the datas in the form and cart
 const form = document.querySelector('form')
 form.addEventListener('submit', e => {
    e.preventDefault()
+
+   if(cart == ""){
+      modaleEmptyCart()
+      return
+   }
+
    let firstName;
    let lastName;
    let address;
    let city;
    let email;
-   let error = []
+   const error = []
    const regexFirstName = /^[a-zA-ZÀ-ÿ- ]{2,}$/
    const regexLastName = /^[a-zA-ZÀ-ÿ- ]{2,}$/
    const regexAddress = /^[a-zA-Z0-9à-ÿÀ-ÿ' -]{10,}$/
@@ -326,8 +356,6 @@ form.addEventListener('submit', e => {
 
    const contact = {firstName, lastName, address, city, email}
 
-   if(cart != ""){
-      sendOrder(contact, cart)
-      clearPage()
-   }
+   sendOrder(contact, cart)
+   clearPage(cart)
 })

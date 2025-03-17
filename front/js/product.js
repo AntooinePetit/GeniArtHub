@@ -157,26 +157,65 @@ function modaleValidateShow(){
    cross.addEventListener('click', e => {
       modale.remove()
    })
+   setTimeout(() => {
+      modale.remove()
+   }, 3000);
 }
 
-function saveData(id, value, format){
-   const safeFormat = format.replace(/\s+/g, '-');
-   const key = `article-${id}-${safeFormat}`
-   const existingProduct = localStorage.getItem(key)
+// function saveData(id, value, format){
+//    const safeFormat = format.replace(/\s+/g, '-');
+//    const key = `article-${id}-${safeFormat}`
+//    const existingProduct = localStorage.getItem(key)
 
-   if(existingProduct){
-      const productData = JSON.parse(existingProduct)
-      productData.quantity += Number(value);
-      if(productData.quantity > 100){
-         modaleErrorShow(productData.quantity)
-      } else {
-         localStorage.setItem(key, JSON.stringify(productData))
-         modaleValidateShow()
-      }
-      return;
+//    if(existingProduct){
+//       const productData = JSON.parse(existingProduct)
+//       productData.quantity += Number(value);
+//       if(productData.quantity > 100){
+//          modaleErrorShow(productData.quantity)
+//       } else {
+//          localStorage.setItem(key, JSON.stringify(productData))
+//          modaleValidateShow()
+//       }
+//       return;
+//    }
+//    const product = {id : String(id), quantity : Number(value), format:String(format)}
+//    localStorage.setItem(key, JSON.stringify(product))
+//    modaleValidateShow()
+// }
+
+function saveData(id, value, format){
+   const quantity = parseInt(value);
+
+   // We build our cart OR we get the cart if it already exists
+   const cart = JSON.parse(localStorage.getItem('cart')) || []
+
+   // We check if the artwork is already in the cart
+   const existingProductIndex = cart.findIndex(el => el.id === id && el.taille === format)
+
+   if(existingProductIndex === -1){
+      cart.push({
+         id,
+         taille: format,
+         quantity
+      })
+      modaleValidateShow()
+      localStorage.setItem("cart", JSON.stringify(cart))
+      return
    }
-   const product = {id : String(id), quantity : Number(value), format:String(format)}
-   localStorage.setItem(key, JSON.stringify(product))
+
+   // Product is already in the cart, we check if new quantity is less than 100, and if it's good > add to cart
+   const currentQuantity = cart[existingProductIndex].quantity
+   const newQuantity = currentQuantity + quantity
+
+   // If new quantity is more than 100, we show an error message
+   if(newQuantity > 100){
+      modaleErrorShow(newQuantity)
+      return
+   }
+
+   // Update the quantity of the product in the cart
+   cart[existingProductIndex].quantity = newQuantity
+   localStorage.setItem("cart", JSON.stringify(cart))
    modaleValidateShow()
 }
 
